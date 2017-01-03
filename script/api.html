@@ -1,0 +1,1140 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>5. 霸业API手册 &mdash; baye-script-doc 1.0 文档</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/translations.js"></script>
+    <link rel="top" title="baye-script-doc 1.0 文档" href="../index.html" />
+    <link rel="up" title="脚本系统简易教程" href="index.html" />
+    <link rel="prev" title="4. 调试方法" href="debug.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="总目录"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="debug.html" title="4. 调试方法"
+             accesskey="P">上一页</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">baye-script-doc 1.0 文档</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">脚本系统简易教程</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="api">
+<h1>5. 霸业API手册<a class="headerlink" href="#api" title="永久链接至标题">¶</a></h1>
+<div class="section" id="datas">
+<span id="id1"></span><h2>5.1. 数据手册<a class="headerlink" href="#datas" title="永久链接至标题">¶</a></h2>
+<p>霸业引擎数据都导出到了 <code class="docutils literal"><span class="pre">baye.data</span></code> 对象里。</p>
+<p>以下摘自霸业引擎源码，后续有时间更新更详细说明。</p>
+<div class="section" id="baye-data">
+<h3>5.1.1. baye.data 属性<a class="headerlink" href="#baye-data" title="永久链接至标题">¶</a></h3>
+<div class="highlight-c"><div class="highlight"><pre><span class="cm">/*变量定义*/</span>
+<span class="cm">/*------------------------------------------*/</span>
+<span class="n">U8</span>  <span class="o">*</span><span class="n">g_FightMap</span><span class="p">;</span>            <span class="cm">/* 战斗地图缓存 */</span>
+<span class="n">U8</span>  <span class="o">*</span><span class="n">g_FightPath</span><span class="p">;</span>           <span class="cm">/* 战斗行军计算 */</span>
+<span class="n">U8</span>  <span class="o">*</span><span class="n">g_FgtAtkRng</span><span class="p">;</span>           <span class="cm">/* 攻击范围 */</span>
+<span class="n">U16</span> <span class="n">g_TileId</span><span class="p">;</span>               <span class="cm">/* 当前地图所用tile的ID */</span>
+<span class="n">U16</span> <span class="n">g_EneTmpProv</span><span class="p">;</span>           <span class="cm">/* 战斗模块，敌人粮草临时变量 */</span>
+<span class="n">U8</span>  <span class="n">g_MapWid</span><span class="p">;</span>               <span class="cm">/* 战斗地图宽度 */</span>
+<span class="n">U8</span>  <span class="n">g_MapHgt</span><span class="p">;</span>               <span class="cm">/* 战斗地图高度 */</span>
+<span class="n">U8</span>  <span class="n">g_FoucsX</span><span class="p">,</span><span class="n">g_FoucsY</span><span class="p">;</span>      <span class="cm">/* 光标的地图坐标 */</span>
+<span class="n">U8</span>  <span class="n">g_MapSX</span><span class="p">,</span><span class="n">g_MapSY</span><span class="p">;</span>        <span class="cm">/* 当前地图显示的起始坐标 */</span>
+<span class="n">U8</span>  <span class="n">g_PathSX</span><span class="p">,</span><span class="n">g_PathSY</span><span class="p">;</span>      <span class="cm">/* 行军范围地图起始坐标 */</span>
+<span class="n">U8</span>  <span class="n">g_PUseSX</span><span class="p">,</span><span class="n">g_PUseSY</span><span class="p">;</span>      <span class="cm">/* 行军范围使用起始坐标 */</span>
+<span class="n">U8</span>  <span class="n">g_BakUpX</span><span class="p">,</span><span class="n">g_BakUpY</span><span class="p">;</span>      <span class="cm">/* 将领坐标备份 */</span>
+<span class="n">U8</span>  <span class="n">g_CityX</span><span class="p">,</span><span class="n">g_CityY</span><span class="p">;</span>        <span class="cm">/* 城市坐标 */</span>
+<span class="n">U8</span>  <span class="n">g_FgtOver</span><span class="p">;</span>              <span class="cm">/* 战斗是否结束 */</span>
+<span class="n">U8</span>  <span class="n">g_FgtWeather</span><span class="p">;</span>           <span class="cm">/* 战场天气情况 */</span>
+<span class="n">U8</span>  <span class="n">g_FgtBoutCnt</span><span class="p">;</span>           <span class="cm">/* 战斗回合计数 */</span>
+<span class="n">U8</span>  <span class="n">g_MainGenIdx</span><span class="p">;</span>           <span class="cm">/* 主将序号 */</span>
+<span class="n">U8</span>  <span class="n">g_LookEnemy</span><span class="p">;</span>            <span class="cm">/* 是否观看敌人移动 */</span>
+<span class="n">U8</span>  <span class="n">g_LookMovie</span><span class="p">;</span>            <span class="cm">/* 是否观看战斗动画 */</span>
+<span class="n">U8</span>  <span class="n">g_MoveSpeed</span><span class="p">;</span>            <span class="cm">/* 战斗中移动速度 */</span>
+<span class="n">FGTJK</span>       <span class="n">g_FgtParam</span><span class="p">;</span>             <span class="cm">/* 战斗模块接口参数 */</span>
+<span class="n">JLPOS</span>       <span class="n">g_GenPos</span><span class="p">[</span><span class="n">FGTA_MAX</span><span class="p">];</span>     <span class="cm">/* 将领地图位置及基本属性 */</span>
+<span class="n">JLATT</span>       <span class="n">g_GenAtt</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>            <span class="cm">/* 攻击状态下的两个将领属性 */</span>
+
+<span class="n">U8</span>  <span class="n">g_AutoUpdateMapXY</span><span class="p">;</span>
+
+<span class="cm">/*变量定义*/</span>
+<span class="cm">/*------------------------------------------*/</span>
+<span class="n">U8</span> <span class="n">g_PlayerKing</span><span class="p">;</span>            <span class="cm">/*玩家君主*/</span>
+<span class="n">U16</span> <span class="n">g_YearDate</span><span class="p">;</span>                     <span class="cm">/*当前日期*/</span>
+<span class="n">U8</span> <span class="n">g_MonthDate</span><span class="p">;</span>                     <span class="cm">/*当前日期*/</span>
+<span class="n">U8</span> <span class="n">g_PIdx</span><span class="p">;</span>                  <span class="cm">/*历史时期*/</span>
+<span class="n">PersonType</span> <span class="o">*</span><span class="n">g_Persons</span><span class="p">;</span>              <span class="cm">/*存放人才属性指针*/</span>
+<span class="n">CityType</span> <span class="n">g_Cities</span><span class="p">[</span><span class="n">CITY_MAX</span><span class="p">];</span>        <span class="cm">/*存放城市属性指针*/</span>
+<span class="n">U8</span> <span class="n">g_PersonsQueue</span><span class="p">[</span><span class="n">PERSON_MAX</span><span class="p">];</span>      <span class="cm">/*人才队列*/</span>
+<span class="n">U8</span> <span class="n">g_GoodsQueue</span><span class="p">[</span><span class="n">GOODS_MAX</span><span class="p">];</span> <span class="cm">/*道具队列*/</span>
+<span class="n">OrderQueueType</span> <span class="o">*</span><span class="n">g_OrderHead</span><span class="p">;</span>        <span class="cm">/*命令队列头指针*/</span>
+<span class="n">OrderQueueType</span> <span class="o">*</span><span class="n">g_OrderEnd</span><span class="p">;</span> <span class="cm">/*命令队列末指针*/</span>
+<span class="n">CitySetType</span> <span class="n">g_CityPos</span><span class="p">;</span>              <span class="cm">/*当前城市地图显示位置结构*/</span>
+<span class="n">U8</span> <span class="n">g_FromSave</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="cm">/*变量定义*/</span>
+<span class="cm">/*------------------------------------------*/</span>
+<span class="n">U8</span> <span class="n">citymap</span><span class="p">[</span><span class="n">SHOWMAP_HS_MAX</span><span class="p">][</span><span class="n">SHOWMAP_WS_MAX</span><span class="p">];</span> <span class="cm">/*当前显示城市地图*/</span>
+<span class="n">U8</span> <span class="n">cavpdb</span><span class="p">,</span><span class="n">cavps</span><span class="p">;</span>                    <span class="cm">/*战争俘虏临时变量*/</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="persontype">
+<h3>5.1.2. PersonType 人物数据定义<a class="headerlink" href="#persontype" title="永久链接至标题">¶</a></h3>
+<div class="highlight-c"><div class="highlight"><pre><span class="k">typedef</span> <span class="k">struct</span> <span class="n">Person</span>                               <span class="cm">/*人才属性 (12 Bytes) */</span>
+<span class="p">{</span>
+    <span class="n">U8</span> <span class="n">OldBelong</span><span class="p">;</span>           <span class="cm">/*俘虏的旧归属*/</span>
+    <span class="n">U8</span> <span class="n">Belong</span><span class="p">;</span>                      <span class="cm">/*归属*/</span>
+    <span class="n">U8</span> <span class="n">Level</span><span class="p">;</span>                       <span class="cm">/*等级*/</span>
+    <span class="n">U8</span> <span class="n">Force</span><span class="p">;</span>                       <span class="cm">/*武力*/</span>
+    <span class="n">U8</span> <span class="n">IQ</span><span class="p">;</span>                          <span class="cm">/*智力*/</span>
+    <span class="n">U8</span> <span class="n">Devotion</span><span class="p">;</span>                    <span class="cm">/*忠诚*/</span>
+    <span class="n">U8</span> <span class="n">Character</span><span class="p">;</span>                   <span class="cm">/*性格*/</span>
+    <span class="n">U8</span> <span class="n">Experience</span><span class="p">;</span>                  <span class="cm">/*经验*/</span>
+    <span class="n">U8</span> <span class="n">Thew</span><span class="p">;</span>                        <span class="cm">/*体力*/</span>
+    <span class="n">U8</span> <span class="n">ArmsType</span><span class="p">;</span>                    <span class="cm">/*兵种*/</span>
+    <span class="n">U16</span> <span class="n">Arms</span><span class="p">;</span>                       <span class="cm">/*兵力*/</span>
+    <span class="n">U8</span> <span class="n">Equip</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span>                    <span class="cm">/*装备*/</span>
+    <span class="n">U8</span> <span class="n">Age</span><span class="p">;</span>                         <span class="cm">/*年龄*/</span>
+<span class="p">}</span><span class="n">PersonType</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="citytype">
+<h3>5.1.3. CityType城池数据定义<a class="headerlink" href="#citytype" title="永久链接至标题">¶</a></h3>
+<div class="highlight-c"><div class="highlight"><pre><span class="k">typedef</span> <span class="k">struct</span> <span class="n">City</span>                         <span class="cm">/*城市属性(30 Bytes)*/</span>
+<span class="p">{</span>
+    <span class="n">U8</span> <span class="n">State</span><span class="p">;</span>
+    <span class="n">U8</span> <span class="n">Belong</span><span class="p">;</span>                      <span class="cm">/*归属*/</span>
+    <span class="n">U8</span> <span class="n">SatrapId</span><span class="p">;</span>                    <span class="cm">/*太守编号*/</span>
+    <span class="n">U16</span> <span class="n">FarmingLimit</span><span class="p">;</span>               <span class="cm">/*农业上限*/</span>
+    <span class="n">U16</span> <span class="n">Farming</span><span class="p">;</span>                    <span class="cm">/*农业开发度*/</span>
+    <span class="n">U16</span> <span class="n">CommerceLimit</span><span class="p">;</span>              <span class="cm">/*商业上限*/</span>
+    <span class="n">U16</span> <span class="n">Commerce</span><span class="p">;</span>                   <span class="cm">/*商业开发度*/</span>
+    <span class="n">U8</span> <span class="n">PeopleDevotion</span><span class="p">;</span>              <span class="cm">/*民忠*/</span>
+    <span class="n">U8</span> <span class="n">AvoidCalamity</span><span class="p">;</span>               <span class="cm">/*防灾*/</span>
+    <span class="n">U32</span> <span class="n">PopulationLimit</span><span class="p">;</span>            <span class="cm">/*人口上限*/</span>
+    <span class="n">U32</span> <span class="n">Population</span><span class="p">;</span>                 <span class="cm">/*人口*/</span>
+    <span class="n">U16</span> <span class="n">Money</span><span class="p">;</span>                      <span class="cm">/*金钱*/</span>
+    <span class="n">U16</span> <span class="n">Food</span><span class="p">;</span>                       <span class="cm">/*粮食*/</span>
+    <span class="n">U16</span> <span class="n">MothballArms</span><span class="p">;</span>               <span class="cm">/*后备兵力*/</span>
+    <span class="n">U8</span> <span class="n">PersonQueue</span><span class="p">;</span>                 <span class="cm">/*人才队列*/</span>
+    <span class="n">U8</span> <span class="n">Persons</span><span class="p">;</span>                     <span class="cm">/*人才数*/</span>
+    <span class="n">U8</span> <span class="n">ToolQueue</span><span class="p">;</span>                   <span class="cm">/*道具队列*/</span>
+    <span class="n">U8</span> <span class="n">Tools</span><span class="p">;</span>                       <span class="cm">/*道具数*/</span>
+<span class="p">}</span><span class="n">CityType</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="goods">
+<h3>5.1.4. GOODS 道具数据定义<a class="headerlink" href="#goods" title="永久链接至标题">¶</a></h3>
+<div class="highlight-c"><div class="highlight"><pre><span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
+    <span class="n">U8</span>      <span class="n">idx</span><span class="p">;</span>                    <span class="cm">/* 道具序号 */</span>
+    <span class="n">U8</span>      <span class="n">useflag</span><span class="p">;</span>                <span class="cm">/* 使用标志：是被使用还是被装备*/</span>
+    <span class="n">U8</span>      <span class="n">atRange</span><span class="p">[</span><span class="mi">30</span><span class="p">];</span>            <span class="cm">/* 攻击范围数据 */</span>
+    <span class="n">U8</span>  <span class="n">changeAttackRange</span><span class="p">;</span>  <span class="cm">/* 是否改变攻击范围 */</span>
+    <span class="n">U8</span>      <span class="n">reserved</span><span class="p">[</span><span class="mi">60</span><span class="o">-</span><span class="mi">31</span><span class="p">];</span>
+    <span class="n">U8</span>      <span class="n">at</span><span class="p">;</span>                     <span class="cm">/* 对武力的加层 */</span>
+    <span class="n">U8</span>      <span class="n">iq</span><span class="p">;</span>                     <span class="cm">/* 对智力的加层 */</span>
+    <span class="n">U8</span>      <span class="n">move</span><span class="p">;</span>                   <span class="cm">/* 对移动力的加层 */</span>
+    <span class="n">U8</span>      <span class="n">arm</span><span class="p">;</span>                    <span class="cm">/* 对兵种的改变 */</span>
+<span class="p">}</span><span class="n">GOODS</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="skillef">
+<h3>5.1.5. SKILLEF技能数据定义<a class="headerlink" href="#skillef" title="永久链接至标题">¶</a></h3>
+<div class="highlight-c"><div class="highlight"><pre><span class="k">typedef</span>     <span class="k">struct</span> <span class="p">{</span>
+    <span class="n">U8</span>      <span class="n">aim</span><span class="p">;</span>                            <span class="cm">/* 施展目标 */</span>
+    <span class="n">U8</span>      <span class="n">state</span><span class="p">;</span>                          <span class="cm">/* 技能对目标状态的影响 */</span>
+    <span class="n">U16</span>     <span class="n">power</span><span class="p">;</span>                          <span class="cm">/* 对兵力的基本伤害 */</span>
+    <span class="n">U16</span>     <span class="n">destroy</span><span class="p">;</span>                        <span class="cm">/* 对粮草的基本伤害 */</span>
+    <span class="n">U8</span>      <span class="n">useMp</span><span class="p">;</span>                          <span class="cm">/* 消耗技能点 */</span>
+    <span class="n">U8</span>      <span class="n">weather</span><span class="p">[</span><span class="mi">5</span><span class="p">];</span>                     <span class="cm">/* 天气效果（0为不可施展 1-100%效果）*/</span>
+    <span class="n">U8</span>      <span class="n">eland</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span>                       <span class="cm">/* 敌人所在地形效果（0为不可施展 1-100%效果）*/</span>
+    <span class="n">U8</span>      <span class="n">oland</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span>                       <span class="cm">/* 我方所在地形效果（0为不可施展 1-100%效果）*/</span>
+    <span class="n">U8</span>      <span class="n">earm</span><span class="p">[</span><span class="mi">6</span><span class="p">];</span>                        <span class="cm">/* 敌人兵种加层（0为不可施展 1-100%效果）*/</span>
+<span class="p">}</span><span class="n">SKILLEF</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="fgtjk">
+<h3>5.1.6. FGTJK战场数据定义<a class="headerlink" href="#fgtjk" title="永久链接至标题">¶</a></h3>
+<div class="highlight-c"><div class="highlight"><pre><span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
+    <span class="n">U8</span>      <span class="n">Mode</span><span class="p">;</span>                           <span class="cm">/* 玩家的战斗模式FGT_DF|FGT_AT */</span>
+    <span class="n">U8</span>      <span class="n">Way</span><span class="p">;</span>                            <span class="cm">/* 战斗进攻方向 */</span>
+    <span class="n">U16</span>     <span class="n">MapId</span><span class="p">;</span>                          <span class="cm">/* 城市战斗地图 */</span>
+    <span class="n">U16</span>     <span class="n">MProvender</span><span class="p">;</span>                     <span class="cm">/* 玩家粮草 */</span>
+    <span class="n">U16</span>     <span class="n">EProvender</span><span class="p">;</span>                     <span class="cm">/* 敌人粮草 */</span>
+    <span class="n">U8</span>      <span class="n">GenArray</span><span class="p">[</span><span class="n">FGTA_MAX</span><span class="p">];</span>             <span class="cm">/* 将领队列 */</span>
+<span class="p">}</span><span class="n">FGTJK</span><span class="p">;</span>                                             <span class="cm">/* 战斗接口 */</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="jlpos">
+<h3>5.1.7. JLPOS战场将领数据定义<a class="headerlink" href="#jlpos" title="永久链接至标题">¶</a></h3>
+<div class="highlight-c"><div class="highlight"><pre><span class="k">typedef</span>     <span class="k">struct</span> <span class="p">{</span>
+    <span class="n">U8</span>      <span class="n">x</span><span class="p">;</span>                              <span class="cm">/* 地图坐标x */</span>
+    <span class="n">U8</span>      <span class="n">y</span><span class="p">;</span>                              <span class="cm">/* 地图坐标y */</span>
+    <span class="n">U8</span>      <span class="n">hp</span><span class="p">;</span>                             <span class="cm">/* 生命 */</span>
+    <span class="n">U8</span>      <span class="n">mp</span><span class="p">;</span>                             <span class="cm">/* 技能点 */</span>
+    <span class="n">U8</span>      <span class="n">move</span><span class="p">;</span>                           <span class="cm">/* 移动力 */</span>
+    <span class="n">U8</span>      <span class="n">active</span><span class="p">;</span>                         <span class="cm">/* 将领执行命令能力 */</span>
+    <span class="n">U8</span>      <span class="n">state</span><span class="p">;</span>                          <span class="cm">/* 状态 */</span>
+<span class="p">}</span><span class="n">JLPOS</span><span class="p">;</span>                                             <span class="cm">/* 将领在地图上的位置 */</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="jlatt">
+<h3>5.1.8. JLATT战斗双方将领数据定义<a class="headerlink" href="#jlatt" title="永久链接至标题">¶</a></h3>
+<div class="highlight-c"><div class="highlight"><pre><span class="k">typedef</span>     <span class="k">struct</span> <span class="p">{</span>
+    <span class="n">U8</span>      <span class="o">*</span><span class="n">level</span><span class="p">;</span>                         <span class="cm">/* 将领等级 */</span>
+    <span class="n">U8</span>      <span class="n">canny</span><span class="p">;</span>                          <span class="cm">/* 中计谋的可能性 */</span>
+    <span class="n">U8</span>      <span class="n">ter</span><span class="p">;</span>                            <span class="cm">/* 将领所在地形 */</span>
+    <span class="n">U8</span>      <span class="n">bile</span><span class="p">;</span>                           <span class="cm">/* 愤怒值 */</span>
+    <span class="n">U8</span>      <span class="n">armsType</span><span class="p">;</span>                       <span class="cm">/* 兵种 */</span>
+    <span class="n">U8</span>      <span class="o">*</span><span class="n">exp</span><span class="p">;</span>                           <span class="cm">/* 将领的经验值 */</span>
+    <span class="n">U16</span>     <span class="o">*</span><span class="n">arms</span><span class="p">;</span>                          <span class="cm">/* 兵力 */</span>
+    <span class="n">U16</span>     <span class="n">at</span><span class="p">;</span>                             <span class="cm">/* 攻击力 */</span>
+    <span class="n">U16</span>     <span class="n">df</span><span class="p">;</span>                             <span class="cm">/* 防御力 */</span>
+<span class="p">}</span><span class="n">JLATT</span><span class="p">;</span>                                             <span class="cm">/* 执行攻击或被攻击的将领属性 */</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="baye-data-g-engineconfig">
+<h3>5.1.9. baye.data.g_engineConfig 数据定义<a class="headerlink" href="#baye-data-g-engineconfig" title="永久链接至标题">¶</a></h3>
+<div class="highlight-c"><div class="highlight"><pre><span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
+    <span class="n">U8</span> <span class="n">enableToolAttackRange</span><span class="p">;</span> <span class="c1">//启用&quot;道具改变攻击范围&quot;</span>
+    <span class="n">U8</span> <span class="n">fixCityOffset</span><span class="p">;</span>    <span class="c1">//纠正城市偏移</span>
+    <span class="n">U8</span> <span class="n">fixThewOverFlow</span><span class="p">;</span>  <span class="c1">//修复体力溢出bug</span>
+    <span class="n">U8</span> <span class="n">fixFoodOverFlow</span><span class="p">;</span>  <span class="c1">//修复出征刷粮草</span>
+    <span class="n">U8</span> <span class="n">fixOverFlow16</span><span class="p">;</span>    <span class="c1">//修复多处16位溢出</span>
+    <span class="n">U8</span> <span class="n">fixConsumeMoney</span><span class="p">;</span>  <span class="c1">//启用招降收费</span>
+    <span class="n">U8</span> <span class="n">fixFightMoveOutRange</span><span class="p">;</span> <span class="c1">//修复战场瞬移</span>
+    <span class="n">U8</span> <span class="n">enable16bitConsumeMoney</span><span class="p">;</span>   <span class="c1">//启用扩展金钱消耗(16位)</span>
+    <span class="n">U8</span> <span class="n">enableScript</span><span class="p">;</span>              <span class="c1">//启用脚本</span>
+    <span class="n">U8</span> <span class="n">fixAlienateComsumeThew</span><span class="p">;</span> <span class="c1">//修复离间减小敌将体力问题</span>
+    <span class="n">U8</span> <span class="n">disableSL</span><span class="p">;</span>              <span class="c1">//禁SL</span>
+    <span class="n">U8</span> <span class="n">aiLevelUpSpeed</span><span class="p">;</span>            <span class="c1">//AI升级速度 (0~100, 0使用原版默认策略)</span>
+
+    <span class="n">U8</span> <span class="n">disableAgeGrow</span><span class="p">;</span>         <span class="c1">//禁用年龄增长</span>
+    <span class="n">U8</span> <span class="n">enableCustomRatio</span><span class="p">;</span>      <span class="c1">//启用自定义参数计算, 下面两线之间的参数总开关</span>
+    <span class="c1">// ---------------------------</span>
+    <span class="n">U16</span> <span class="n">ratioOfArmsToLevel</span><span class="p">;</span>    <span class="c1">//带兵量和等级的关系, 默认100  (X*R)</span>
+    <span class="n">U8</span> <span class="n">ratioOfArmsToAge</span><span class="p">;</span>      <span class="c1">//带兵量和年龄的关系, 默认0  (X*R)</span>
+    <span class="n">U8</span> <span class="n">ratioOfArmsToIQ</span><span class="p">;</span>        <span class="c1">//带兵量和智力的关系, 默认10  (X*R)</span>
+    <span class="n">U8</span> <span class="n">ratioOfArmsToForce</span><span class="p">;</span>     <span class="c1">//带兵量和武力的关系, 默认10  (X*R)</span>
+
+    <span class="n">U8</span> <span class="n">ratioOfAttToForce</span><span class="p">;</span>      <span class="c1">//武力对攻击的影响, 默认10  (X*R/10)</span>
+    <span class="n">U8</span> <span class="n">ratioOfAttToIQ</span><span class="p">;</span>          <span class="c1">//智力对攻击的影响, 默认0  (X*R/10)</span>
+    <span class="n">U8</span> <span class="n">ratioOfAttToAge</span><span class="p">;</span>         <span class="c1">//年龄对攻击的影响, 默认0  (X*R/10)</span>
+
+    <span class="n">U8</span> <span class="n">ratioOfDefenceToForce</span><span class="p">;</span> <span class="c1">//武力对防御的影响, 默认0  (X*R/10)</span>
+    <span class="n">U8</span> <span class="n">ratioOfDefenceToIQ</span><span class="p">;</span>    <span class="c1">//智力对防御的影响, 默认10  (X*R/10)</span>
+    <span class="n">U8</span> <span class="n">ratioOfDefenceToAge</span><span class="p">;</span>   <span class="c1">//年龄对防御的影响, 默认0  (X*R/10)</span>
+    <span class="c1">// ---------------------------</span>
+    <span class="n">U16</span> <span class="n">ratioOfFoodToArmsPerMouth</span><span class="p">;</span> <span class="c1">// 市政兵力和粮耗(默认50，越大粮耗越少)</span>
+    <span class="n">U16</span> <span class="n">ratioOfFoodToArmsPerDay</span><span class="p">;</span> <span class="c1">//战场兵力和粮耗参数(默认3，越大粮耗越少)</span>
+    <span class="n">U8</span> <span class="n">armsPerDevotion</span><span class="p">;</span>        <span class="c1">//征兵量和民忠的关系(默认20)</span>
+    <span class="n">U8</span> <span class="n">armsPerMoney</span><span class="p">;</span>           <span class="c1">//每个金钱能购买的士兵数(默认10)</span>
+    <span class="n">U8</span> <span class="n">maxLevel</span><span class="p">;</span>                <span class="c1">//最大等级</span>
+    <span class="n">U8</span> <span class="n">responseNoteOfBettle</span><span class="p">;</span>   <span class="c1">//&quot;战斗提示&quot;允许按键跳过(默认0，填2允许)</span>
+    <span class="n">U8</span> <span class="n">aiDefenceMode</span><span class="p">;</span>          <span class="c1">// AI行军策略，默认0追主将，1守城</span>
+    <span class="n">U8</span> <span class="n">aiAttackMethod</span><span class="p">;</span>          <span class="c1">// AI攻击时选择技能/普攻的算法(0原版，1优化版)</span>
+<span class="p">}</span> <span class="n">EngineConfig</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="hooks">
+<span id="id2"></span><h2>5.2. 钩子函数手册<a class="headerlink" href="#hooks" title="永久链接至标题">¶</a></h2>
+<div class="section" id="baye-hooks-aifightcommand">
+<h3>5.2.1. baye.hooks.aiFightCommand<a class="headerlink" href="#baye-hooks-aifightcommand" title="永久链接至标题">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="82%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>功能</strong></td>
+<td>战场调用脚本进行行军计算及战斗命令选择，可利用此钩子实现自定义AI行军算法。</td>
+</tr>
+<tr class="row-even"><td><strong>调用时机</strong></td>
+<td>AI每次计算将领行军策略前</td>
+</tr>
+</tbody>
+</table>
+<p><strong>输入参数</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="28%" />
+<col width="9%" />
+<col width="62%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">参数</th>
+<th class="head">类型</th>
+<th class="head">说明</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>context.sIdx</td>
+<td>U8</td>
+<td>需要计算的行军将领的 <code class="docutils literal"><span class="pre">战场序号</span></code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>输出参数</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="27%" />
+<col width="9%" />
+<col width="64%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">参数</th>
+<th class="head">类型</th>
+<th class="head">说明</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>context.type</td>
+<td>U8</td>
+<td>命令类型，0 普攻， 1 技能， 3 休息</td>
+</tr>
+<tr class="row-odd"><td>context.param</td>
+<td>U8</td>
+<td>技能序号（如果选择技能）</td>
+</tr>
+<tr class="row-even"><td>context.aIdx</td>
+<td>U8</td>
+<td>攻击或技能目标将领的 <code class="docutils literal"><span class="pre">战场序号</span></code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="baye-hooks-getskillids">
+<h3>5.2.2. baye.hooks.getSkillIds<a class="headerlink" href="#baye-hooks-getskillids" title="永久链接至标题">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="32%" />
+<col width="68%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>功能</strong></td>
+<td>获取将领当前能使用的技能</td>
+</tr>
+<tr class="row-even"><td><strong>调用时机</strong></td>
+<td>战场每当AI或玩家使用技能前</td>
+</tr>
+</tbody>
+</table>
+<p><strong>输入参数</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="28%" />
+<col width="11%" />
+<col width="61%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">参数</th>
+<th class="head">类型</th>
+<th class="head">说明</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>context.sIdx</td>
+<td>U8</td>
+<td>需要计算的行军将领的 <code class="docutils literal"><span class="pre">战场序号</span></code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>输出参数</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="27%" />
+<col width="11%" />
+<col width="62%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">参数</th>
+<th class="head">类型</th>
+<th class="head">说明</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>context.type</td>
+<td>U8</td>
+<td>命令类型，0 普攻， 1 技能， 3 休息</td>
+</tr>
+<tr class="row-odd"><td>context.param</td>
+<td>U8</td>
+<td>技能序号（如果选择技能）</td>
+</tr>
+<tr class="row-even"><td>context.aIdx</td>
+<td>U8</td>
+<td>攻击或技能目标将领的 <code class="docutils literal"><span class="pre">战场序号</span></code></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="baye-hooks-calcattackrange">
+<h3>5.2.3. baye.hooks.calcAttackRange<a class="headerlink" href="#baye-hooks-calcattackrange" title="永久链接至标题">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="45%" />
+<col width="55%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>功能</strong></td>
+<td>计算攻击范围</td>
+</tr>
+<tr class="row-even"><td><strong>调用时机</strong></td>
+<td>战场每次下攻击命令</td>
+</tr>
+</tbody>
+</table>
+<p><strong>输入参数</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="43%" />
+<col width="10%" />
+<col width="47%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">参数</th>
+<th class="head">类型</th>
+<th class="head">说明</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>context.personIndex</td>
+<td>U8</td>
+<td>将领 <code class="docutils literal"><span class="pre">序号</span></code></td>
+</tr>
+<tr class="row-odd"><td>context.ter</td>
+<td>U8</td>
+<td>将领所处地形</td>
+</tr>
+<tr class="row-even"><td>context.type</td>
+<td>U8</td>
+<td>攻击类型，0 普攻，1 技能</td>
+</tr>
+<tr class="row-odd"><td>context.skillId</td>
+<td>U8</td>
+<td>技能 <code class="docutils literal"><span class="pre">ID</span></code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>输出参数</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="36%" />
+<col width="8%" />
+<col width="56%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">参数</th>
+<th class="head">类型</th>
+<th class="head">说明</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>context.range</td>
+<td>[U8]</td>
+<td>攻击范围矩阵</td>
+</tr>
+<tr class="row-odd"><td>context.rangeSize</td>
+<td>U8</td>
+<td>攻击范围矩阵的边长，如5x5矩阵填写5</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="baye-hooks-showskill">
+<h3>5.2.4. baye.hooks.showSkill<a class="headerlink" href="#baye-hooks-showskill" title="永久链接至标题">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="37%" />
+<col width="63%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>功能</strong></td>
+<td>施展技能是否成功
+可用于调整技能成功率。</td>
+</tr>
+<tr class="row-even"><td><strong>调用时机</strong></td>
+<td>施展技能时</td>
+</tr>
+</tbody>
+</table>
+<p><strong>输入参数</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="48%" />
+<col width="15%" />
+<col width="36%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">参数</th>
+<th class="head">类型</th>
+<th class="head">说明</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>context.ter</td>
+<td>U8</td>
+<td>将领所处地形</td>
+</tr>
+<tr class="row-odd"><td>context.skillId</td>
+<td>U8</td>
+<td>技能 <code class="docutils literal"><span class="pre">ID</span></code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>输出参数</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="24%" />
+<col width="7%" />
+<col width="69%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">参数</th>
+<th class="head">类型</th>
+<th class="head">说明</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>context.result</td>
+<td>U8</td>
+<td>是否成功，0 失败， 1 成功  (原context.success)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="baye-hooks-givetool">
+<h3>5.2.5. baye.hooks.giveTool<a class="headerlink" href="#baye-hooks-givetool" title="永久链接至标题">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="32%" />
+<col width="68%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>功能</strong></td>
+<td>用于控制赏赐命令是否成功</td>
+</tr>
+<tr class="row-even"><td><strong>调用时机</strong></td>
+<td>执行赏赐命令，道具即将被装到人物时</td>
+</tr>
+</tbody>
+</table>
+<p><strong>输入参数</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="52%" />
+<col width="12%" />
+<col width="36%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">参数</th>
+<th class="head">类型</th>
+<th class="head">说明</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>context.personIndex</td>
+<td>U8</td>
+<td>将领所处地形</td>
+</tr>
+<tr class="row-odd"><td>context.toolIndex</td>
+<td>U8</td>
+<td>技能 <code class="docutils literal"><span class="pre">ID</span></code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>输出参数</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="35%" />
+<col width="11%" />
+<col width="54%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">参数</th>
+<th class="head">类型</th>
+<th class="head">说明</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>context.result</td>
+<td>U8</td>
+<td>是否成功，0 失败， 1 成功</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="baye-hooks-takeofftool">
+<h3>5.2.6. baye.hooks.takeOffTool<a class="headerlink" href="#baye-hooks-takeofftool" title="永久链接至标题">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="32%" />
+<col width="68%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>功能</strong></td>
+<td>用于控制没收命令是否成功</td>
+</tr>
+<tr class="row-even"><td><strong>调用时机</strong></td>
+<td>执行赏赐命令，道具即将被装到人物时</td>
+</tr>
+</tbody>
+</table>
+<p><strong>输入参数</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="52%" />
+<col width="12%" />
+<col width="36%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">参数</th>
+<th class="head">类型</th>
+<th class="head">说明</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>context.personIndex</td>
+<td>U8</td>
+<td>将领所处地形</td>
+</tr>
+<tr class="row-odd"><td>context.toolIndex</td>
+<td>U8</td>
+<td>技能`ID`</td>
+</tr>
+</tbody>
+</table>
+<p><strong>输出参数</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="38%" />
+<col width="10%" />
+<col width="52%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">参数</th>
+<th class="head">类型</th>
+<th class="head">说明</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>context.result</td>
+<td>U8</td>
+<td>是否成功，0 失败， 1 成功</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="baye-hooks-didopennewgame">
+<h3>5.2.7. baye.hooks.didOpenNewGame<a class="headerlink" href="#baye-hooks-didopennewgame" title="永久链接至标题">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="39%" />
+<col width="61%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>功能</strong></td>
+<td>自由</td>
+</tr>
+<tr class="row-even"><td><strong>调用时机</strong></td>
+<td>新开局时</td>
+</tr>
+<tr class="row-odd"><td><strong>输入参数</strong></td>
+<td>无</td>
+</tr>
+<tr class="row-even"><td><strong>输出参数</strong></td>
+<td>无</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="baye-hooks-didloadgame">
+<h3>5.2.8. baye.hooks.didLoadGame<a class="headerlink" href="#baye-hooks-didloadgame" title="永久链接至标题">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="39%" />
+<col width="61%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>功能</strong></td>
+<td>自由</td>
+</tr>
+<tr class="row-even"><td><strong>调用时机</strong></td>
+<td>成功读档后</td>
+</tr>
+<tr class="row-odd"><td><strong>输入参数</strong></td>
+<td>无</td>
+</tr>
+<tr class="row-even"><td><strong>输出参数</strong></td>
+<td>无</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="baye-hooks-willsavegame">
+<h3>5.2.9. baye.hooks.willSaveGame<a class="headerlink" href="#baye-hooks-willsavegame" title="永久链接至标题">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="39%" />
+<col width="61%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>功能</strong></td>
+<td>自由</td>
+</tr>
+<tr class="row-even"><td><strong>调用时机</strong></td>
+<td>执行存档前</td>
+</tr>
+<tr class="row-odd"><td><strong>输入参数</strong></td>
+<td>无</td>
+</tr>
+<tr class="row-even"><td><strong>输出参数</strong></td>
+<td>无</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="baye-hooks-tacticstage1">
+<h3>5.2.10. baye.hooks.tacticStage1<a class="headerlink" href="#baye-hooks-tacticstage1" title="永久链接至标题">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="39%" />
+<col width="61%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>功能</strong></td>
+<td>自由</td>
+</tr>
+<tr class="row-even"><td><strong>调用时机</strong></td>
+<td>策略阶段1</td>
+</tr>
+<tr class="row-odd"><td><strong>输入参数</strong></td>
+<td>无</td>
+</tr>
+<tr class="row-even"><td><strong>输出参数</strong></td>
+<td>无</td>
+</tr>
+</tbody>
+</table>
+<p>引擎的运行，最顶层分为如下几个阶段循环运行：</p>
+<ul class="simple">
+<li>判断统一或全军覆灭</li>
+<li>更新每个城池的太守</li>
+<li>玩家策略中 (玩家操作下各种命令，策略结束后继续后续步骤)</li>
+<li>电脑策略中</li>
+<li>执行命令（包括市政和军备等命令）</li>
+<li>执行数据更新策略（如粮草收获等）</li>
+</ul>
+<p>现脚本系统在此间插入了5个钩子点：</p>
+<ul class="simple">
+<li>判断统一或全军覆灭</li>
+<li>更新每个城池的太守</li>
+<li>调用tacticStage1</li>
+<li>玩家策略中 (玩家操作下各种命令，策略结束后继续后续步骤)</li>
+<li>调用tacticStage2</li>
+<li>电脑策略中</li>
+<li>调用tacticStage3</li>
+<li>执行命令（包括市政和军备等命令）</li>
+<li>调用tacticStage4</li>
+<li>执行数据更新策略（如粮草收获等）</li>
+<li>调用tacticStage5</li>
+</ul>
+</div>
+<div class="section" id="baye-hooks-tacticstage2">
+<h3>5.2.11. baye.hooks.tacticStage2<a class="headerlink" href="#baye-hooks-tacticstage2" title="永久链接至标题">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="39%" />
+<col width="61%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>功能</strong></td>
+<td>自由</td>
+</tr>
+<tr class="row-even"><td><strong>调用时机</strong></td>
+<td>策略阶段2</td>
+</tr>
+<tr class="row-odd"><td><strong>输入参数</strong></td>
+<td>无</td>
+</tr>
+<tr class="row-even"><td><strong>输出参数</strong></td>
+<td>无</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="baye-hooks-tacticstage3">
+<h3>5.2.12. baye.hooks.tacticStage3<a class="headerlink" href="#baye-hooks-tacticstage3" title="永久链接至标题">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="39%" />
+<col width="61%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>功能</strong></td>
+<td>自由</td>
+</tr>
+<tr class="row-even"><td><strong>调用时机</strong></td>
+<td>策略阶段3</td>
+</tr>
+<tr class="row-odd"><td><strong>输入参数</strong></td>
+<td>无</td>
+</tr>
+<tr class="row-even"><td><strong>输出参数</strong></td>
+<td>无</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="baye-hooks-tacticstage4">
+<h3>5.2.13. baye.hooks.tacticStage4<a class="headerlink" href="#baye-hooks-tacticstage4" title="永久链接至标题">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="39%" />
+<col width="61%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>功能</strong></td>
+<td>自由</td>
+</tr>
+<tr class="row-even"><td><strong>调用时机</strong></td>
+<td>策略阶段5</td>
+</tr>
+<tr class="row-odd"><td><strong>输入参数</strong></td>
+<td>无</td>
+</tr>
+<tr class="row-even"><td><strong>输出参数</strong></td>
+<td>无</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="baye-hooks-tacticstage5">
+<h3>5.2.14. baye.hooks.tacticStage5<a class="headerlink" href="#baye-hooks-tacticstage5" title="永久链接至标题">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="39%" />
+<col width="61%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><strong>功能</strong></td>
+<td>自由</td>
+</tr>
+<tr class="row-even"><td><strong>调用时机</strong></td>
+<td>策略阶段5</td>
+</tr>
+<tr class="row-odd"><td><strong>输入参数</strong></td>
+<td>无</td>
+</tr>
+<tr class="row-even"><td><strong>输出参数</strong></td>
+<td>无</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="id3">
+<h2>5.3. 功能函数<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
+<div class="section" id="baye-getpersonname-index">
+<h3>5.3.1. baye.getPersonName(index)<a class="headerlink" href="#baye-getpersonname-index" title="永久链接至标题">¶</a></h3>
+<dl class="docutils">
+<dt><strong>功能</strong></dt>
+<dd>获取人物名称</dd>
+</dl>
+<p><strong>参数</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="41%" />
+<col width="22%" />
+<col width="38%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">参数</th>
+<th class="head">类型</th>
+<th class="head">说明</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>index</td>
+<td>U8</td>
+<td>将领序号</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt><strong>返回值</strong></dt>
+<dd>string 人物名称</dd>
+</dl>
+</div>
+<div class="section" id="baye-gettoolname-index">
+<h3>5.3.2. baye.getToolName(index)<a class="headerlink" href="#baye-gettoolname-index" title="永久链接至标题">¶</a></h3>
+<dl class="docutils">
+<dt><strong>功能</strong></dt>
+<dd>获取道具名称</dd>
+</dl>
+<p><strong>参数</strong>：</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="41%" />
+<col width="22%" />
+<col width="38%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">参数</th>
+<th class="head">类型</th>
+<th class="head">说明</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>index</td>
+<td>U8</td>
+<td>道具序号</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt><strong>返回值</strong></dt>
+<dd>string 道具名称</dd>
+</dl>
+</div>
+<div class="section" id="baye-getskillname-index">
+<h3>5.3.3. baye.getSkillName(index)<a class="headerlink" href="#baye-getskillname-index" title="永久链接至标题">¶</a></h3>
+<dl class="docutils">
+<dt><strong>功能</strong></dt>
+<dd>获取技能名称</dd>
+</dl>
+<p><strong>参数</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="24%" />
+<col width="28%" />
+<col width="48%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">参数</th>
+<th class="head">类型</th>
+<th class="head">说明</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>index</td>
+<td>U8</td>
+<td>技能序号</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt><strong>返回值</strong></dt>
+<dd>string    技能名称</dd>
+</dl>
+</div>
+<div class="section" id="baye-getcityname-index">
+<h3>5.3.4. baye.getCityName(index)<a class="headerlink" href="#baye-getcityname-index" title="永久链接至标题">¶</a></h3>
+<dl class="docutils">
+<dt><strong>功能</strong></dt>
+<dd>获取城池名称</dd>
+</dl>
+<p><strong>参数</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="24%" />
+<col width="28%" />
+<col width="48%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">参数</th>
+<th class="head">类型</th>
+<th class="head">说明</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>index</td>
+<td>U8</td>
+<td>城池序号</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt><strong>返回值</strong></dt>
+<dd>string    城池名称</dd>
+</dl>
+</div>
+<div class="section" id="baye-setcustomdata-data">
+<h3>5.3.5. baye.setCustomData(data)<a class="headerlink" href="#baye-setcustomdata-data" title="永久链接至标题">¶</a></h3>
+<dl class="docutils">
+<dt><strong>功能</strong></dt>
+<dd>存入自定义数据，自定义数据会存储进存档当中</dd>
+</dl>
+<p><strong>参数</strong></p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="24%" />
+<col width="28%" />
+<col width="48%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">参数</th>
+<th class="head">类型</th>
+<th class="head">说明</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>data</td>
+<td>string</td>
+<td>自定义数据</td>
+</tr>
+</tbody>
+</table>
+<p><strong>返回值</strong> 无</p>
+</div>
+<div class="section" id="baye-getcustomdata">
+<h3>5.3.6. baye.getCustomData()<a class="headerlink" href="#baye-getcustomdata" title="永久链接至标题">¶</a></h3>
+<dl class="docutils">
+<dt><strong>功能</strong></dt>
+<dd>取出之前存储的自定义数据</dd>
+</dl>
+<p><strong>参数</strong> 无</p>
+<dl class="docutils">
+<dt><strong>返回值</strong></dt>
+<dd>string    之前存储的数据，若没存过，返回null</dd>
+</dl>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">內容目录</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">5. 霸业API手册</a><ul>
+<li><a class="reference internal" href="#datas">5.1. 数据手册</a><ul>
+<li><a class="reference internal" href="#baye-data">5.1.1. baye.data 属性</a></li>
+<li><a class="reference internal" href="#persontype">5.1.2. PersonType 人物数据定义</a></li>
+<li><a class="reference internal" href="#citytype">5.1.3. CityType城池数据定义</a></li>
+<li><a class="reference internal" href="#goods">5.1.4. GOODS 道具数据定义</a></li>
+<li><a class="reference internal" href="#skillef">5.1.5. SKILLEF技能数据定义</a></li>
+<li><a class="reference internal" href="#fgtjk">5.1.6. FGTJK战场数据定义</a></li>
+<li><a class="reference internal" href="#jlpos">5.1.7. JLPOS战场将领数据定义</a></li>
+<li><a class="reference internal" href="#jlatt">5.1.8. JLATT战斗双方将领数据定义</a></li>
+<li><a class="reference internal" href="#baye-data-g-engineconfig">5.1.9. baye.data.g_engineConfig 数据定义</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#hooks">5.2. 钩子函数手册</a><ul>
+<li><a class="reference internal" href="#baye-hooks-aifightcommand">5.2.1. baye.hooks.aiFightCommand</a></li>
+<li><a class="reference internal" href="#baye-hooks-getskillids">5.2.2. baye.hooks.getSkillIds</a></li>
+<li><a class="reference internal" href="#baye-hooks-calcattackrange">5.2.3. baye.hooks.calcAttackRange</a></li>
+<li><a class="reference internal" href="#baye-hooks-showskill">5.2.4. baye.hooks.showSkill</a></li>
+<li><a class="reference internal" href="#baye-hooks-givetool">5.2.5. baye.hooks.giveTool</a></li>
+<li><a class="reference internal" href="#baye-hooks-takeofftool">5.2.6. baye.hooks.takeOffTool</a></li>
+<li><a class="reference internal" href="#baye-hooks-didopennewgame">5.2.7. baye.hooks.didOpenNewGame</a></li>
+<li><a class="reference internal" href="#baye-hooks-didloadgame">5.2.8. baye.hooks.didLoadGame</a></li>
+<li><a class="reference internal" href="#baye-hooks-willsavegame">5.2.9. baye.hooks.willSaveGame</a></li>
+<li><a class="reference internal" href="#baye-hooks-tacticstage1">5.2.10. baye.hooks.tacticStage1</a></li>
+<li><a class="reference internal" href="#baye-hooks-tacticstage2">5.2.11. baye.hooks.tacticStage2</a></li>
+<li><a class="reference internal" href="#baye-hooks-tacticstage3">5.2.12. baye.hooks.tacticStage3</a></li>
+<li><a class="reference internal" href="#baye-hooks-tacticstage4">5.2.13. baye.hooks.tacticStage4</a></li>
+<li><a class="reference internal" href="#baye-hooks-tacticstage5">5.2.14. baye.hooks.tacticStage5</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id3">5.3. 功能函数</a><ul>
+<li><a class="reference internal" href="#baye-getpersonname-index">5.3.1. baye.getPersonName(index)</a></li>
+<li><a class="reference internal" href="#baye-gettoolname-index">5.3.2. baye.getToolName(index)</a></li>
+<li><a class="reference internal" href="#baye-getskillname-index">5.3.3. baye.getSkillName(index)</a></li>
+<li><a class="reference internal" href="#baye-getcityname-index">5.3.4. baye.getCityName(index)</a></li>
+<li><a class="reference internal" href="#baye-setcustomdata-data">5.3.5. baye.setCustomData(data)</a></li>
+<li><a class="reference internal" href="#baye-getcustomdata">5.3.6. baye.getCustomData()</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>上一个主题</h4>
+  <p class="topless"><a href="debug.html"
+                        title="上一章">4. 调试方法</a></p>
+  <div role="note" aria-label="source link">
+    <h3>本页</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/script/api.txt"
+            rel="nofollow">显示源代码</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>快速搜索</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="转向" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    输入相关的术语，模块，类或者函数名称进行搜索
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, loong.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.4</a>
+      
+      |
+      <a href="../_sources/script/api.txt"
+          rel="nofollow">Page source</a></li>
+    </div>
+
+    
+
+    
+  </body>
+</html>

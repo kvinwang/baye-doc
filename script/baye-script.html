@@ -1,0 +1,211 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>2. 霸业脚本系统原理 &mdash; baye-script-doc 1.0 文档</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/translations.js"></script>
+    <link rel="top" title="baye-script-doc 1.0 文档" href="../index.html" />
+    <link rel="up" title="脚本系统简易教程" href="index.html" />
+    <link rel="next" title="4. 调试方法" href="debug.html" />
+    <link rel="prev" title="1. Javascript简要基础" href="js.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="总目录"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="debug.html" title="4. 调试方法"
+             accesskey="N">下一页</a> |</li>
+        <li class="right" >
+          <a href="js.html" title="1. Javascript简要基础"
+             accesskey="P">上一页</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">baye-script-doc 1.0 文档</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">脚本系统简易教程</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="id1">
+<h1>2. 霸业脚本系统原理<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h1>
+<p>霸业的脚本系统定义了一个对象 <code class="docutils literal"><span class="pre">baye.hooks</span></code> ，称之为 <code class="docutils literal"><span class="pre">钩子对象</span></code> ，此对象作为引擎与脚本衔接的纽带。
+引擎在一系列特定的时间点会调用 <code class="docutils literal"><span class="pre">baye.hooks</span></code> 里面的 <code class="docutils literal"><span class="pre">钩子函数</span></code> 来完成特定任务。</p>
+<p>当lib开启了脚本功能后，引擎在启动时会执行 <code class="docutils literal"><span class="pre">script.js</span></code> 文件内的代码。因此， <code class="docutils literal"><span class="pre">script.js</span></code> 文件的主要作用就是往 <code class="docutils literal"><span class="pre">baye.hooks</span></code> 对象里面填充我们需要关注的 <code class="docutils literal"><span class="pre">钩子函数</span></code> 来实现特定功能。</p>
+<p>示例:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">baye</span><span class="p">.</span><span class="nx">hooks</span><span class="p">.</span><span class="nx">giveTool</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">context</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">//简单示例，赏赐成功</span>
+    <span class="nx">context</span><span class="p">.</span><span class="nx">result</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>如上，每当引擎执行到赏赐功能的时候会调用 <code class="docutils literal"><span class="pre">baye.hooks.giveTool</span></code> 这个钩子函数，达到&#8221; <strong>询问</strong> 脚本是否要允许赏赐“这个目的。</p>
+</div>
+<div class="section" id="id2">
+<h1>3. 霸业脚本编写向导<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h1>
+<p>了解了原理后，我们就可以一步一步来编写霸业脚本了。</p>
+<p>假如我们要实现这么一个功能: <strong>每月对AI控制的人物执行升级</strong></p>
+<p>为实现此功能，我们需要在写一些功能代码，并且让引擎在每次策略结束后执行我们的代码。</p>
+<p><strong>Step1: 让引擎每次策略结束后执行我们的代码</strong></p>
+<p>我们设置钩子函数 <code class="docutils literal"><span class="pre">baye.hooks.tacticStage4</span></code> (详细介绍参考下文 <a class="reference internal" href="api.html#hooks"><span>钩子函数手册</span></a> )</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">baye</span><span class="p">.</span><span class="nx">hooks</span><span class="p">.</span><span class="nx">tacticStage4</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">//待续</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p><strong>Step2: 遍历所有人物，如果有归属，且归属不是玩家君主, 且等级未满上限，升级之</strong>:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">baye</span><span class="p">.</span><span class="nx">hooks</span><span class="p">.</span><span class="nx">tacticStage4</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">allPerson</span> <span class="o">=</span> <span class="nx">baye</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">g_Persons</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">playerKingId</span> <span class="o">=</span> <span class="nx">baye</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">g_PlayerKing</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">maxLevel</span> <span class="o">=</span> <span class="nx">baye</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">g_engineConfig</span><span class="p">.</span><span class="nx">maxLevel</span><span class="p">;</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">allPerson</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">p</span> <span class="o">=</span> <span class="nx">allPerson</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">p</span><span class="p">.</span><span class="nx">Belong</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="nx">p</span><span class="p">.</span><span class="nx">Belong</span> <span class="o">!=</span> <span class="nx">playerKingId</span> <span class="o">&amp;&amp;</span> <span class="nx">p</span><span class="p">.</span><span class="nx">Level</span> <span class="o">&lt;</span> <span class="nx">maxLevel</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">p</span><span class="p">.</span><span class="nx">Level</span> <span class="o">=</span> <span class="nx">p</span><span class="p">.</span><span class="nx">Level</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>注：</p>
+<ol class="arabic simple">
+<li>关于 <code class="docutils literal"><span class="pre">baye.data</span></code> 内的数据参考后文 <a class="reference internal" href="api.html#datas"><span>数据手册</span></a></li>
+<li><code class="docutils literal"><span class="pre">allPerson[i]</span></code> : 取列表里第 <code class="docutils literal"><span class="pre">i</span></code> 个元素（也就是第i个人物的数据）</li>
+<li><code class="docutils literal"><span class="pre">&amp;&amp;</span></code> : 并且</li>
+<li><code class="docutils literal"><span class="pre">!=</span></code> : 不等于</li>
+</ol>
+<p><strong>Step3: 进一步完善</strong></p>
+<p>当人物处于被俘虏状态时，归属被设置为255，因此进一步排除俘虏被升级:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">baye</span><span class="p">.</span><span class="nx">hooks</span><span class="p">.</span><span class="nx">tacticStage4</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">allPerson</span> <span class="o">=</span> <span class="nx">baye</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">g_Persons</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">playerKingId</span> <span class="o">=</span> <span class="nx">baye</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">g_PlayerKing</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">maxLevel</span> <span class="o">=</span> <span class="nx">baye</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">g_engineConfig</span><span class="p">.</span><span class="nx">maxLevel</span><span class="p">;</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">allPerson</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">p</span> <span class="o">=</span> <span class="nx">allPerson</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="nx">p</span><span class="p">.</span><span class="nx">Belong</span> <span class="o">&gt;</span> <span class="mi">0</span>
+            <span class="o">&amp;&amp;</span> <span class="nx">p</span><span class="p">.</span><span class="nx">Belong</span> <span class="o">!=</span> <span class="nx">playerKingId</span>
+            <span class="o">&amp;&amp;</span> <span class="nx">p</span><span class="p">.</span><span class="nx">Belong</span> <span class="o">!=</span> <span class="mi">255</span>
+            <span class="o">&amp;&amp;</span> <span class="nx">p</span><span class="p">.</span><span class="nx">Level</span> <span class="o">&lt;</span> <span class="nx">maxLevel</span>
+        <span class="p">)</span> <span class="p">{</span>
+            <span class="nx">p</span><span class="p">.</span><span class="nx">Level</span> <span class="o">=</span> <span class="nx">p</span><span class="p">.</span><span class="nx">Level</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+<p><strong>Step4: 加入概率因素</strong>:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">baye</span><span class="p">.</span><span class="nx">hooks</span><span class="p">.</span><span class="nx">tacticStage4</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">allPerson</span> <span class="o">=</span> <span class="nx">baye</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">g_Persons</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">playerKingId</span> <span class="o">=</span> <span class="nx">baye</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">g_PlayerKing</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="kd">var</span> <span class="nx">maxLevel</span> <span class="o">=</span> <span class="nx">baye</span><span class="p">.</span><span class="nx">data</span><span class="p">.</span><span class="nx">g_engineConfig</span><span class="p">.</span><span class="nx">maxLevel</span><span class="p">;</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">allPerson</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kd">var</span> <span class="nx">p</span> <span class="o">=</span> <span class="nx">allPerson</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="nx">p</span><span class="p">.</span><span class="nx">Belong</span> <span class="o">&gt;</span> <span class="mi">0</span>
+            <span class="o">&amp;&amp;</span> <span class="nx">p</span><span class="p">.</span><span class="nx">Belong</span> <span class="o">!=</span> <span class="nx">playerKingId</span>
+            <span class="o">&amp;&amp;</span> <span class="nx">p</span><span class="p">.</span><span class="nx">Belong</span> <span class="o">!=</span> <span class="mi">255</span>
+            <span class="o">&amp;&amp;</span> <span class="nx">p</span><span class="p">.</span><span class="nx">Level</span> <span class="o">&lt;</span> <span class="nx">maxLevel</span>
+        <span class="p">)</span> <span class="p">{</span>
+            <span class="kd">var</span> <span class="nx">chance</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">random</span><span class="p">();</span> <span class="c1">//产生一个0~1之间的随机数</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nx">chance</span> <span class="o">&lt;</span> <span class="mf">0.7</span><span class="p">)</span> <span class="p">{</span><span class="c1">// 随机数小于0.7升级，也就是70%的概率升级</span>
+                <span class="nx">p</span><span class="p">.</span><span class="nx">Level</span> <span class="o">=</span> <span class="nx">p</span><span class="p">.</span><span class="nx">Level</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">內容目录</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">2. 霸业脚本系统原理</a></li>
+<li><a class="reference internal" href="#id2">3. 霸业脚本编写向导</a></li>
+</ul>
+
+  <h4>上一个主题</h4>
+  <p class="topless"><a href="js.html"
+                        title="上一章">1. Javascript简要基础</a></p>
+  <h4>下一个主题</h4>
+  <p class="topless"><a href="debug.html"
+                        title="下一章">4. 调试方法</a></p>
+  <div role="note" aria-label="source link">
+    <h3>本页</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/script/baye-script.txt"
+            rel="nofollow">显示源代码</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>快速搜索</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="转向" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    输入相关的术语，模块，类或者函数名称进行搜索
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, loong.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.4</a>
+      
+      |
+      <a href="../_sources/script/baye-script.txt"
+          rel="nofollow">Page source</a></li>
+    </div>
+
+    
+
+    
+  </body>
+</html>

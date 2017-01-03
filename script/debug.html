@@ -1,0 +1,168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>4. 调试方法 &mdash; baye-script-doc 1.0 文档</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/translations.js"></script>
+    <link rel="top" title="baye-script-doc 1.0 文档" href="../index.html" />
+    <link rel="up" title="脚本系统简易教程" href="index.html" />
+    <link rel="next" title="5. 霸业API手册" href="api.html" />
+    <link rel="prev" title="2. 霸业脚本系统原理" href="baye-script.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="总目录"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="api.html" title="5. 霸业API手册"
+             accesskey="N">下一页</a> |</li>
+        <li class="right" >
+          <a href="baye-script.html" title="2. 霸业脚本系统原理"
+             accesskey="P">上一页</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">baye-script-doc 1.0 文档</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">脚本系统简易教程</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="id1">
+<h1>4. 调试方法<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h1>
+<p>我们使用PC浏览器的 <strong>&#8220;开发者工具&#8221;</strong> 来调试脚本。以Chrome浏览器为例，打开baye页面后按 <code class="docutils literal"><span class="pre">F12</span></code> 打开“开发者工具”。
+如下图：</p>
+<img alt="打开开发者工具" src="../_images/open-dev.png" />
+<div class="section" id="id2">
+<h2>4.1. 实时查看和修改引擎数据<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<p>霸业的引擎数据存放在 <code class="docutils literal"><span class="pre">baye.data</span></code> 对象中，浏览器控制台中输入 <code class="docutils literal"><span class="pre">baye.data.</span></code> 浏览器会弹出自动补全菜单，对象中有哪些属性一览无余。如图：</p>
+<img alt="自动补全" src="../_images/completion.png" />
+<p>查看第一个城池的归属：</p>
+<img alt="查看城池归属" src="../_images/get-belong.png" />
+<p>修改第一个城池的归属：</p>
+<img alt="修改城池归属" src="../_images/set-belong.png" />
+<p>修改后移动一下城池光标，可以看到已经实时生效。</p>
+</div>
+<div class="section" id="id3">
+<h2>4.2. 实时替换钩子函数<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
+<p>调试钩子函数时，如果每次修改一点脚本，又重新打包lib-&gt;重新加载运行，会非常麻烦。
+当我们修改了钩子函数后，只需在浏览器控制台对该钩子重新赋值，该钩子就即时生效。如图：</p>
+<img alt="修改钩子函数" src="../_images/set-hook.png" />
+</div>
+<div class="section" id="id4">
+<h2>4.3. 添加调试日志<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h2>
+<p>有时候为调试代码中的逻辑是否按预想的逻辑正常执行，我们需要得到一些实时输出信息。
+我们用 <code class="docutils literal"><span class="pre">console.log</span></code> 来实现日志功能。</p>
+<p>例如，前面的升级功能，我们要先看升级功能有没有正常执行，可以添加一些日志:</p>
+<div class="highlight-python"><div class="highlight"><pre>baye.hooks.tacticStage4 = function() {
+    var allPerson = baye.data.g_Persons;
+    var playerKingId = baye.data.g_PlayerKing + 1;
+    var maxLevel = baye.data.g_engineConfig.maxLevel;
+
+    for (var i = 0; i &lt; allPerson.length; i++) {
+        var p = allPerson[i];
+        if (p.Belong &gt; 0 &amp;&amp; p.Belong != playerKingId &amp;&amp; p.Level &lt; maxLevel) {
+            p.Level = p.Level + 1;
+            var name = baye.getPersonName(i);
+            console.log(name + &quot; 升级为: &quot; + p.Level);
+        }
+    }
+};
+</pre></div>
+</div>
+<p>策略结束后，可见到控制台打印如下：</p>
+<img alt="打印日志" src="../_images/add-log.png" />
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">內容目录</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">4. 调试方法</a><ul>
+<li><a class="reference internal" href="#id2">4.1. 实时查看和修改引擎数据</a></li>
+<li><a class="reference internal" href="#id3">4.2. 实时替换钩子函数</a></li>
+<li><a class="reference internal" href="#id4">4.3. 添加调试日志</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>上一个主题</h4>
+  <p class="topless"><a href="baye-script.html"
+                        title="上一章">2. 霸业脚本系统原理</a></p>
+  <h4>下一个主题</h4>
+  <p class="topless"><a href="api.html"
+                        title="下一章">5. 霸业API手册</a></p>
+  <div role="note" aria-label="source link">
+    <h3>本页</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/script/debug.txt"
+            rel="nofollow">显示源代码</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>快速搜索</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="转向" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    输入相关的术语，模块，类或者函数名称进行搜索
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, loong.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.4</a>
+      
+      |
+      <a href="../_sources/script/debug.txt"
+          rel="nofollow">Page source</a></li>
+    </div>
+
+    
+
+    
+  </body>
+</html>

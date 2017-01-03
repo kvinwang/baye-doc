@@ -1,0 +1,266 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>1. Javascript简要基础 &mdash; baye-script-doc 1.0 文档</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/translations.js"></script>
+    <link rel="top" title="baye-script-doc 1.0 文档" href="../index.html" />
+    <link rel="up" title="脚本系统简易教程" href="index.html" />
+    <link rel="next" title="2. 霸业脚本系统原理" href="baye-script.html" />
+    <link rel="prev" title="脚本系统简易教程" href="index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>导航</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="总目录"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="baye-script.html" title="2. 霸业脚本系统原理"
+             accesskey="N">下一页</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="脚本系统简易教程"
+             accesskey="P">上一页</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">baye-script-doc 1.0 文档</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">脚本系统简易教程</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="javascript">
+<h1>1. Javascript简要基础<a class="headerlink" href="#javascript" title="永久链接至标题">¶</a></h1>
+<div class="section" id="id1">
+<h2>1.1. 基本概念<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h2>
+<p>脚本是一种编程语言，不同于普通文档（如XML），脚本主要由一系列的 <strong>数据</strong> 和对数据的 <strong>操作</strong> （语句）构成。</p>
+<p>脚本中语句是一条接着一条顺序执行下去的。如:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="nx">a</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">//让对象a的值为1 （赋值）</span>
+<span class="nx">b</span> <span class="o">=</span> <span class="nx">a</span><span class="p">;</span> <span class="c1">//让b的值为a的值，此后b的值也为1</span>
+<span class="nx">a</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span> <span class="c1">//让a的值为2，此后a为2，b仍然为1</span>
+<span class="nx">c</span> <span class="o">=</span> <span class="nx">a</span><span class="p">;</span> <span class="c1">//让c的值为a的值，此后a为2，b为1，c为2</span>
+</pre></div>
+</div>
+<p>以上脚本有4条语句，顺序执行。</p>
+<p>XML文档描述“ <strong>做什么</strong> ”，脚本描述“ <strong>怎么做</strong> ”。</p>
+<p>霸业的脚本系统采用javascript语言, 本教程仅讲一些最基本的javascript脚本知识，欲了解更全面，请参考相关资料。</p>
+</div>
+<div class="section" id="id2">
+<h2>1.2. 注释<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<p>注释的内容是为了帮助程序员阅读用的，代码执行时注释会被忽略。</p>
+<p><code class="docutils literal"><span class="pre">//</span></code> 标记单行注释开始，每一行的 <code class="docutils literal"><span class="pre">//</span></code> 开始到行末的内容为注释。</p>
+<p><code class="docutils literal"><span class="pre">/*</span></code> 和 <code class="docutils literal"><span class="pre">*/</span></code> 对，用于标记多行注释，如:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="cm">/*</span>
+<span class="cm">这是注释</span>
+<span class="cm">这也是注释</span>
+<span class="cm">*/</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id3">
+<h2>1.3. Javascript的数据类型<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h2>
+<p>数字: <code class="docutils literal"><span class="pre">123</span></code></p>
+<p>字符串: <code class="docutils literal"><span class="pre">&quot;赵云&quot;</span></code></p>
+<p>对象: <code class="docutils literal"><span class="pre">{name:</span> <span class="pre">&quot;赵云&quot;,</span> <span class="pre">age:</span> <span class="pre">20}</span></code></p>
+<p>列表: <code class="docutils literal"><span class="pre">[1,</span> <span class="pre">2,</span> <span class="pre">3]</span></code></p>
+<p>...</p>
+</div>
+<div class="section" id="id4">
+<h2>1.4. 赋值<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h2>
+<p>最基础的动作语句是赋值，赋值就是让一个 <code class="docutils literal"><span class="pre">名字</span></code> 关联一个 <code class="docutils literal"><span class="pre">值</span></code> , 其后，我们就可以在需要用到这个 <code class="docutils literal"><span class="pre">值</span></code> 的地方使用这个 <code class="docutils literal"><span class="pre">名字</span></code> 来代替。</p>
+<p>基本语法：</p>
+<p><code class="docutils literal"><span class="pre">变量名称=值;</span></code></p>
+<p>示例:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="cm">/*</span>
+<span class="cm">简单赋值语句</span>
+<span class="cm">让 a 关联值 1，分号指示语句结束</span>
+<span class="cm">javascript里面分号是可选的，但为避免歧义，最好每条语句都加上分号</span>
+<span class="cm">*/</span>
+
+<span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>  <span class="c1">// var 定义并赋值，首次使用时加上var</span>
+<span class="nx">a</span> <span class="o">=</span> <span class="nx">a</span> <span class="o">+</span> <span class="mi">2</span><span class="p">;</span>  <span class="c1">// 重新赋值, 此后a的值是3</span>
+</pre></div>
+</div>
+<p>没接触过编程语言的朋友一定要注意: <strong>程序里面的</strong> <code class="docutils literal"><span class="pre">=</span></code> <strong>符号代表的是一个动作，区别于我们数学里面学的</strong> <code class="docutils literal"><span class="pre">=</span></code> <strong>代表一个相等关系</strong> .</p>
+</div>
+<div class="section" id="id5">
+<h2>1.5. 条件判断<a class="headerlink" href="#id5" title="永久链接至标题">¶</a></h2>
+<p>有时候程序需要根据不同的条件执行不同的代码，Javasctipt 用 <code class="docutils literal"><span class="pre">if</span></code> 来进行条件判断。</p>
+<p>示例:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+<span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">&gt;</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 如果 a &gt; b</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;a &gt; b&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>示例2:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">&gt;</span> <span class="nx">b</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 如果 a &gt; b</span>
+    <span class="c1">// console.log语句通常用于调试，它将字符串输出到控制台。</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;a &gt; b&quot;</span><span class="p">);</span>
+<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;a = 1&quot;</span><span class="p">);</span>
+<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="nx">a</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;a = 2&quot;</span><span class="p">);</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="c1">// 其它情况</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;其它情况&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id6">
+<h2>1.6. 遍历数据<a class="headerlink" href="#id6" title="永久链接至标题">¶</a></h2>
+<p>有时候我们需要遍历一个集合里面的每一个元素做操作，比如霸业里面找出符合某种条件的人物。</p>
+<p>我们通常使用 <code class="docutils literal"><span class="pre">for</span></code> 循环来实现遍历数据，示例:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">numbers</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">];</span>
+<span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">numbers</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nx">numbers</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">numbers</span><span class="p">[</span><span class="nx">i</span><span class="p">]);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">for</span></code> 循环语法构成如下:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="k">for</span> <span class="p">(</span><span class="nx">表达式1</span><span class="p">;</span> <span class="nx">表达式2</span><span class="p">;</span> <span class="nx">表达式3</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">循环体</span>
+<span class="p">}</span>
+
+<span class="nx">其它语句</span>
+</pre></div>
+</div>
+<p><strong>执行流程：</strong></p>
+<img alt="for流程图" src="../_images/flow.png" />
+</div>
+<div class="section" id="function">
+<h2>1.7. 函数（function）<a class="headerlink" href="#function" title="永久链接至标题">¶</a></h2>
+<p>如果一段代码是可复用的或是逻辑相对独立，我们可以将其封装称为函数。</p>
+<p>基本语法:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="kd">function</span> <span class="nx">函数名称</span><span class="p">(</span><span class="nx">参数列表</span><span class="p">){</span>
+    <span class="nx">函数体</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>函数名称可以忽略，称为匿名函数。</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="c1">// 这种格式是普通的赋值语句， “=”右边的的函数整体是一个值。</span>
+<span class="nx">变量名称</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">参数列表</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">函数体</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>示例:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="kd">function</span> <span class="nx">add</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">x</span> <span class="o">+</span> <span class="nx">y</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="nx">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span> <span class="c1">// now, c = 3</span>
+<span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="nx">add</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>或:</p>
+<div class="highlight-javascript"><div class="highlight"><pre><span class="kd">var</span> <span class="nx">add</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">x</span><span class="p">,</span> <span class="nx">y</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">x</span> <span class="o">+</span> <span class="nx">y</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="kd">var</span> <span class="nx">a</span> <span class="o">=</span> <span class="nx">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span> <span class="c1">// now, c = 3</span>
+<span class="kd">var</span> <span class="nx">b</span> <span class="o">=</span> <span class="nx">add</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">內容目录</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">1. Javascript简要基础</a><ul>
+<li><a class="reference internal" href="#id1">1.1. 基本概念</a></li>
+<li><a class="reference internal" href="#id2">1.2. 注释</a></li>
+<li><a class="reference internal" href="#id3">1.3. Javascript的数据类型</a></li>
+<li><a class="reference internal" href="#id4">1.4. 赋值</a></li>
+<li><a class="reference internal" href="#id5">1.5. 条件判断</a></li>
+<li><a class="reference internal" href="#id6">1.6. 遍历数据</a></li>
+<li><a class="reference internal" href="#function">1.7. 函数（function）</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>上一个主题</h4>
+  <p class="topless"><a href="index.html"
+                        title="上一章">脚本系统简易教程</a></p>
+  <h4>下一个主题</h4>
+  <p class="topless"><a href="baye-script.html"
+                        title="下一章">2. 霸业脚本系统原理</a></p>
+  <div role="note" aria-label="source link">
+    <h3>本页</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/script/js.txt"
+            rel="nofollow">显示源代码</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>快速搜索</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="转向" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    输入相关的术语，模块，类或者函数名称进行搜索
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, loong.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.4</a>
+      
+      |
+      <a href="../_sources/script/js.txt"
+          rel="nofollow">Page source</a></li>
+    </div>
+
+    
+
+    
+  </body>
+</html>

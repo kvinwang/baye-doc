@@ -1,0 +1,17 @@
+
+脚本系统简易教程
+================
+
+得益于HTML优势，网页版霸业在原版基础上扩展出Javascript脚本系统，使得lib制作能高度定制游戏逻辑。
+
+
+
+.. toctree::
+    :maxdepth: 2
+    :numbered:
+
+    js
+    baye-script
+    debug
+    api
+
